@@ -1,0 +1,23 @@
+@font-face {
+	font-family: 'Poppin';
+	src: url('../../public/assets/fonts/CabinSketch-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Segoe-UI';
+	src: url('../../public/assets/fonts/FontsFree-Net-Segoe-UI.ttf');
+}
+
+body {
+	font-weight: 400;
+	font-family: 'Segeo-UI', sans-serif;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+p {
+	margin: 0;
+}
