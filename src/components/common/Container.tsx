@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import styled from 'styled-components';
+import Menu from './Menu';
 
 const WrapperDiv = styled.div`
 	display: flex;
@@ -25,6 +26,7 @@ const SubMenuDiv = styled.div`
 `;
 
 const ContentDiv = styled.div`
+	width: calc(100vw - 400px);
 	height: calc(100vh - 100px);
 	padding: 50px;
 	background-color: white;
@@ -32,18 +34,16 @@ const ContentDiv = styled.div`
 `;
 
 interface Props {
-	useSubMenu: boolean;
 	children: ReactElement;
 }
 
-function Container({ useSubMenu, children }: Props): ReactElement {
+function Container({ children }: Props): ReactElement {
 	return (
 		<WrapperDiv>
-			<MenuDiv>{children.props.children[0]}</MenuDiv>
-			{useSubMenu && <SubMenuDiv>{children.props.children[1]}</SubMenuDiv>}
-			<ContentDiv style={{ width: useSubMenu ? 'calc(100vw - 700px)' : 'calc(100vw-400px)' }}>
-				{children.props.children[children.props.children.length - 1]}
-			</ContentDiv>
+			<MenuDiv>
+				<Menu />
+			</MenuDiv>
+			{children}
 		</WrapperDiv>
 	);
 }
