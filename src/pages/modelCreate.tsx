@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
 import Container from '../components/common/Container';
+import BuildModel from '../components/content/BuildModel';
 
 const ModelCreate: NextPage = () => {
 	return (
@@ -10,7 +11,7 @@ const ModelCreate: NextPage = () => {
 			</Head>
 			<main>
 				<Container>
-					<div></div>
+					<BuildModel />
 				</Container>
 			</main>
 		</>

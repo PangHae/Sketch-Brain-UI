@@ -19,38 +19,6 @@ const menuList = [
 	},
 ];
 
-const MenuItemDiv = styled.div`
-	margin: 0 10px;
-	width: 280px;
-	height: 50px;
-	line-height: 50px;
-	text-align: center;
-	font-size: 1.3rem;
-	font-family: 'Poppin';
-	&:hover {
-		color: black;
-		border-radius: 10px;
-		background-color: white;
-		cursor: pointer;
-	}
-`;
-
-const ImageWrapperDiv = styled.div`
-	padding: 50px;
-	padding-bottom: 5px;
-`;
-
-const Title = styled.p`
-	width: 300px;
-	text-align: center;
-	height: 60px;
-	margin-top: 10px;
-	margin-bottom: 20px;
-	font-family: 'Poppin';
-	font-weight: 400;
-	font-size: 3rem;
-`;
-
 function Menu(): ReactElement {
 	const router = useRouter();
 
@@ -82,3 +50,35 @@ function Menu(): ReactElement {
 }
 
 export default Menu;
+
+const MenuItemDiv = styled.div`
+	margin: 0 10px;
+	width: 280px;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	font-size: 1.3rem;
+	font-family: 'Poppin';
+	&:hover {
+		color: black;
+		border-radius: 10px;
+		background-color: white;
+		cursor: pointer;
+	}
+`;
+
+const ImageWrapperDiv = styled.div`
+	padding: 50px;
+	padding-bottom: 5px;
+`;
+
+const Title = styled.p`
+	width: 300px;
+	text-align: center;
+	height: 60px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	font-family: 'Poppin';
+	font-weight: 400;
+	font-size: 3rem;
+`;
