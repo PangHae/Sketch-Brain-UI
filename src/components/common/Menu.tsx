@@ -82,3 +82,38 @@ const Title = styled.p`
 	font-weight: 400;
 	font-size: 3rem;
 `;
+<<<<<<< HEAD
+=======
+
+function Menu(): ReactElement {
+	const router = useRouter();
+
+	const handleClickMenu: MouseEventHandler<HTMLDivElement> = (e) => {
+		const { currentTarget } = e;
+		const route = currentTarget.className.split(' ')[2];
+		if (route === 'study') {
+			router.push('/');
+		} else {
+			router.push(`/${route}`);
+		}
+	};
+
+	return (
+		<>
+			<ImageWrapperDiv>
+				<Image src={Logo} />
+			</ImageWrapperDiv>
+			<Title>Sketch Brain</Title>
+			{menuList.map((v, i) => {
+				return (
+					<MenuItemDiv className={v.value} key={v.value} onClick={handleClickMenu}>
+						<p>{v.text}</p>
+					</MenuItemDiv>
+				);
+			})}
+		</>
+	);
+}
+
+export default Menu;
+>>>>>>> origin/feat/pages
