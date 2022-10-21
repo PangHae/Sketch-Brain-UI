@@ -1,16 +1,29 @@
-import React, { ReactElement } from 'react';
-import LayerList from '../layers/LayerList';
+import React, { ReactElement, useState } from 'react';
+import LayerList from '../layer/LayerList';
 import styled from 'styled-components';
+import { ParsedLayerParameter } from '../../types';
 
 function BuildModel(): ReactElement {
+	const [previewDisplay, setPreviewDisplay] = useState(false);
+	const handleClickLayer = (data: ParsedLayerParameter[]) => {
+		setPreviewDisplay(!previewDisplay);
+	};
+
+	const handleClickAddedLayer = () => {};
+
 	return (
 		<ContentWrapperDiv>
 			<BlockSelectDiv>
 				<TitleDiv>Select Layer</TitleDiv>
-				<LayerList />
+				<LayerList onClick={handleClickLayer} />
 			</BlockSelectDiv>
 			<BlockDisplayDiv>
-				<TitleDiv>Layer Preview</TitleDiv>
+				<BlockDiv style={{ width: previewDisplay ? '45%' : '100%' }}>
+					<TitleDiv>Layer Preview</TitleDiv>
+				</BlockDiv>
+				<ParameterPreviewDiv style={{ width: previewDisplay ? '55%' : '0%' }}>
+					{previewDisplay && <TitleDiv>Set Parameter</TitleDiv>}
+				</ParameterPreviewDiv>
 			</BlockDisplayDiv>
 		</ContentWrapperDiv>
 	);
@@ -32,10 +45,8 @@ const BlockSelectDiv = styled.div`
 
 const BlockDisplayDiv = styled.div`
 	display: flex;
-	flex-direction: column;
-	padding: 10px;
-	width: calc(100vw - 640px);
-	height: calc(100vh - 20px);
+	width: calc(100vw - 620px);
+	height: 100vh;
 	background-color: white;
 `;
 
@@ -47,4 +58,16 @@ const TitleDiv = styled.div`
 	font-family: 'Poppin';
 	font-weight: 400;
 	text-align: center;
+`;
+
+const BlockDiv = styled.div`
+	width: ${(props) => props.style?.width};
+	background-color: white;
+	transition: width 0.5s linear;
+`;
+
+const ParameterPreviewDiv = styled.div`
+	width: ${(props) => props.style?.width};
+
+	background-color: gray;
 `;

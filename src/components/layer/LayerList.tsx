@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import Layer from './Layer';
 import styled from 'styled-components';
+import { ParsedLayerParameter } from '../../types';
 
 const layerList = [
 	{ name: 'Activation', fileName: 'Activation' },
@@ -14,11 +15,15 @@ const layerList = [
 	{ name: 'Zero Padding', fileName: 'ZeroPadding2D' },
 ];
 
-function LayerList(): ReactElement {
+interface Props {
+	onClick: (data: ParsedLayerParameter[]) => void;
+}
+
+function LayerList({ onClick }: Props): ReactElement {
 	return (
 		<LayerWrapperDiv>
 			{layerList.map((value) => (
-				<Layer key={value.fileName} value={value} />
+				<Layer key={value.fileName} value={value} onClick={onClick} />
 			))}
 		</LayerWrapperDiv>
 	);

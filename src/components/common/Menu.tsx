@@ -52,7 +52,7 @@ function Menu(): ReactElement {
 export default Menu;
 
 const MenuItemDiv = styled.div`
-	margin: 0 10px;
+	margin: 10px;
 	width: 280px;
 	height: 50px;
 	line-height: 50px;

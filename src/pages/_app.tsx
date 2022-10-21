@@ -1,24 +1,16 @@
 import { AppContext, AppInitialProps, AppProps } from 'next/app';
-import { useRef } from 'react';
-import { NextComponentType } from 'next';
-import { QueryClient, QueryClientProvider, Hydrate } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '../styles/globals.css';
 
-function MyApp({
-	Component,
-	pageProps,
-}: AppProps): NextComponentType<AppContext, AppInitialProps, AppProps> {
-	const queryClientRef = useRef<QueryClient>();
-	if (!queryClientRef.current) {
-		queryClientRef.current = new QueryClient();
-	}
+function MyApp({ Component, pageProps }: AppProps) {
+	const queryClient = new QueryClient();
 
 	return (
 		<>
-			<QueryClientProvider client={queryClientRef.current}>
-				<Hydrate state={pageProps.dehydratedState}>
-					<Component {...pageProps} />
-				</Hydrate>
+			<QueryClientProvider client={queryClient}>
+				{/* <Hydrate state={pageProps.dehydratedState}> */}
+				<Component {...pageProps} />
+				{/* </Hydrate> */}
 			</QueryClientProvider>
 		</>
 	);
