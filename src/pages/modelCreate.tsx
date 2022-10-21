@@ -1,9 +1,9 @@
-import type { NextPage } from 'next';
+import { NextPage } from 'next';
 import Head from 'next/head';
 import Container from '../components/common/Container';
-import MarkdownViewer from '../components/common/MarkdownViewer';
+import BuildModel from '../components/content/BuildModel';
 
-const Home: NextPage = () => {
+const ModelCreate: NextPage = () => {
 	return (
 		<>
 			<Head>
@@ -11,11 +11,11 @@ const Home: NextPage = () => {
 			</Head>
 			<main>
 				<Container>
-					<MarkdownViewer />
+					<BuildModel />
 				</Container>
 			</main>
 		</>
 	);
 };
 
-export default Home;
+export default ModelCreate;
