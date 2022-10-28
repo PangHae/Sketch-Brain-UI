@@ -5,11 +5,10 @@ metadata:
   labels:
     app: sketchbrain-ui
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - name: ui-port
       port: 3000
       targetPort: 3000
-      nodePort: 30080
   selector:
     app: sketchbrain-ui
