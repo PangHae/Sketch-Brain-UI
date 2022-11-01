@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { MouseEventHandler, ReactElement, useEffect, useState } from 'react';
+import React, { MouseEventHandler, ReactElement, useState, MouseEvent } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import styled from 'styled-components';
 import {
@@ -11,34 +11,28 @@ import {
 
 interface Props {
 	value: LayerItem;
-	onClick: (data: ParsedLayerParameter[]) => void;
+	onClick: (data: ParsedLayerParameter, event: MouseEvent<HTMLDivElement>) => void;
 }
 
 const URL = process.env.NEXT_PUBLIC_API_URL;
 
 function Layer({ value, onClick }: Props): ReactElement {
-	const [layerDataJson, setLayerDataJson] = useState<ParsedLayerParameter[]>([]);
+	const [layerDataJson, setLayerDataJson] = useState<ParsedLayerParameter>({});
 	useQuery(
 		[`${value.name}`],
 		() => axios.get(`${URL}/api/server/layer/name/${value.fileName.toLowerCase()}`),
 		{
 			retry: 0,
 			onSuccess: (response) => {
-				const dataArr = Object.entries(response.data)
-					.map((value: EntriedLayerParameter) => {
-						const v = value[1] as LayerParameter;
-						if (v.visible) {
-							if (v.type === 'int' || v.type === 'float') {
-								v.type = 'number';
-							}
-							return {
-								[value[0]]: v,
-							};
-						}
-					})
-					.filter((value) => value);
-
-				setLayerDataJson(dataArr);
+				let tmp = {};
+				Object.entries(response.data).forEach((value: EntriedLayerParameter) => {
+					const v = value[1] as LayerParameter;
+					if (v.visible) {
+						delete v.visible;
+						tmp = { ...tmp, [value[0]]: v };
+					}
+				});
+				setLayerDataJson(tmp);
 			},
 			onError: (error: Error) => {
 				console.log(error.message);
@@ -46,17 +40,20 @@ function Layer({ value, onClick }: Props): ReactElement {
 		},
 	);
 
-	const handleClickLayer = () => {
-		onClick(layerDataJson);
-		console.log(layerDataJson);
+	const handleClickLayer: MouseEventHandler<HTMLDivElement> = (e: MouseEvent<HTMLDivElement>) => {
+		onClick(layerDataJson, e);
 	};
 
-	return <LayerDiv onClick={() => handleClickLayer()}>{value.name}</LayerDiv>;
+	return (
+		<LayerDiv id={value.fileName} onClick={(e) => handleClickLayer(e)}>
+			{value.name}
+		</LayerDiv>
+	);
 }
 
 export default Layer;
 
-const LayerDiv = styled.div`
+export const LayerDiv = styled.div`
 	width: 80%;
 	height: 50px;
 	line-height: 50px;

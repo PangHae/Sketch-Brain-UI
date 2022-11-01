@@ -14,8 +14,8 @@ const menuList = [
 		value: 'modelCreate',
 	},
 	{
-		text: '모델 추출하기',
-		value: 'modelExport',
+		text: '결과 확인하기',
+		value: 'result',
 	},
 ];
 

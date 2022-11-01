@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, MouseEvent } from 'react';
 import Layer from './Layer';
 import styled from 'styled-components';
 import { ParsedLayerParameter } from '../../types';
@@ -16,7 +16,7 @@ const layerList = [
 ];
 
 interface Props {
-	onClick: (data: ParsedLayerParameter[]) => void;
+	onClick: (data: ParsedLayerParameter, event: MouseEvent<HTMLDivElement>) => void;
 }
 
 function LayerList({ onClick }: Props): ReactElement {
