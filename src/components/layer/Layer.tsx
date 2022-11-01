@@ -1,6 +1,6 @@
-import axios from 'axios';
-import React, { MouseEventHandler, ReactElement, useState, MouseEvent } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { requestApi } from '../../utils/axios';
+import { MouseEvent, MouseEventHandler, ReactElement, useState } from 'react';
 import styled from 'styled-components';
 import {
 	EntriedLayerParameter,
@@ -14,18 +14,21 @@ interface Props {
 	onClick: (data: ParsedLayerParameter, event: MouseEvent<HTMLDivElement>) => void;
 }
 
-const URL = process.env.NEXT_PUBLIC_API_URL;
-
 function Layer({ value, onClick }: Props): ReactElement {
 	const [layerDataJson, setLayerDataJson] = useState<ParsedLayerParameter>({});
 	useQuery(
 		[`${value.name}`],
-		() => axios.get(`${URL}/api/server/layer/name/${value.fileName.toLowerCase()}`),
+		() =>
+			requestApi
+				.get<EntriedLayerParameter>(`/server/layer/name/${value.fileName.toLowerCase()}`)
+				.then((res) => res.data),
 		{
 			retry: 0,
-			onSuccess: (response) => {
+			onSuccess: (data) => {
+				if (!data || Object.keys(data).length === 0) return;
+
 				let tmp = {};
-				Object.entries(response.data).forEach((value: EntriedLayerParameter) => {
+				Object.entries(data).forEach((value) => {
 					const v = value[1] as LayerParameter;
 					if (v.visible) {
 						delete v.visible;
@@ -40,7 +43,7 @@ function Layer({ value, onClick }: Props): ReactElement {
 		},
 	);
 
-	const handleClickLayer: MouseEventHandler<HTMLDivElement> = (e: MouseEvent<HTMLDivElement>) => {
+	const handleClickLayer: MouseEventHandler<HTMLDivElement> = (e) => {
 		onClick(layerDataJson, e);
 	};
 

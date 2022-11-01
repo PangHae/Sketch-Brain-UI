@@ -15,6 +15,7 @@ import axios from 'axios';
 
 function BuildModel(): ReactElement {
 	const [previewDisplay, setPreviewDisplay] = useState(false);
+
 	const [curLayer, setCurLayer] = useState<LayerParameterNameAdded[]>([]);
 	const [layerList, setLayerList] = useState<ParsedLayerParameterList[]>([]);
 	const [userName, setUserName] = useState('');
@@ -40,7 +41,7 @@ function BuildModel(): ReactElement {
 		if (!previewDisplay) {
 			setPreviewDisplay(true);
 		}
-		const row = Object.entries({ ...data }).map((value) => {
+		const row = Object.entries(data!).map((value) => {
 			return { ...value[1], parameterName: value[0] };
 		});
 		setCurLayer(row);

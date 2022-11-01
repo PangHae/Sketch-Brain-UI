@@ -2,15 +2,32 @@ import React, { ReactElement } from 'react';
 import styled from 'styled-components';
 import Menu from './Menu';
 
+interface Props {
+	children: ReactElement;
+}
+
+function Container({ children }: Props): ReactElement {
+	return (
+		<WrapperDiv>
+			<MenuDiv>
+				<Menu />
+			</MenuDiv>
+			{children}
+		</WrapperDiv>
+	);
+}
+
+export default Container;
+
 const WrapperDiv = styled.div`
 	display: flex;
-	width: 100vw;
+	width: 100%;
 	height: 100vh;
 
 	background-color: gray;
 `;
 
-const MenuDiv = styled.div`
+const MenuDiv = styled.aside`
 	width: 300px;
 	height: 100vh;
 	background-color: #492dd6;
@@ -32,20 +49,3 @@ const ContentDiv = styled.div`
 	background-color: white;
 	overflow-y: scroll;
 `;
-
-interface Props {
-	children: ReactElement;
-}
-
-function Container({ children }: Props): ReactElement {
-	return (
-		<WrapperDiv>
-			<MenuDiv>
-				<Menu />
-			</MenuDiv>
-			{children}
-		</WrapperDiv>
-	);
-}
-
-export default Container;

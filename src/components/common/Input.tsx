@@ -1,26 +1,15 @@
-import React, {
-	InputHTMLAttributes,
-	ReactElement,
-	useRef,
-	forwardRef,
-	Ref,
-	ForwardedRef,
-} from 'react';
+import React, { InputHTMLAttributes, useRef } from 'react';
 import styled from 'styled-components';
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
-	ref?: ForwardedRef<HTMLInputElement>;
-}
+interface Props extends InputHTMLAttributes<HTMLInputElement> {}
 
-function Input({ value, type, ref, ...props }: Props): ReactElement {
-	const inputRef = ref ? ref : useRef<HTMLInputElement>(null);
+const Input: React.FC<Props> = ({ value, type, ...props }) => {
+	const inputRef = useRef<HTMLInputElement>(null);
 
 	return <StyleInput value={value} type={type} ref={inputRef} {...props} />;
-}
+};
 
-export default forwardRef((props: Props, ref: ForwardedRef<HTMLInputElement>) => {
-	return <Input {...props} ref={ref} />;
-});
+export default Input;
 
 const StyleInput = styled.input`
 	box-sizing: border-box;
