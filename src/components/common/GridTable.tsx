@@ -1,10 +1,11 @@
+/* eslint-disable no-shadow */
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import React, { useEffect, useState, useMemo, type Dispatch, type SetStateAction } from 'react';
 import styled from 'styled-components';
-import { getColumns } from './columns';
+import { cloneDeep } from 'lodash';
+import getColumns from './columns';
 
 import { LayerParameterNameAdded } from '../../types';
-import { cloneDeep } from 'lodash';
 import Button from './Button';
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 const GridTable: React.FC<Props> = ({ row, setRow, curLayerIndex }) => {
 	const [data, setData] = useState<LayerParameterNameAdded[]>([]);
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const columns = useMemo(() => getColumns(setData), [curLayerIndex]);
 
 	const table = useReactTable({

@@ -1,29 +1,9 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import Button from '../common/Button';
 import { BsSearch } from 'react-icons/bs';
+import Button from '../common/Button';
 import Input from '../common/Input';
 import RCGridTable from '../common/RCGridTable';
-
-const ModelResult: FC = () => {
-	return (
-		<WrapperDiv>
-			<TitleDiv>Result</TitleDiv>
-			<UserSearchDiv>
-				<p>User Name</p>
-				<Input style={{ margin: '0 10px 0 10px' }} />
-				<Button style={{ width: 'auto' }} placeholder='User Name'>
-					<BsSearch />
-				</Button>
-			</UserSearchDiv>
-			<UserDataDiv>
-				<RCGridTable />
-			</UserDataDiv>
-		</WrapperDiv>
-	);
-};
-
-export default ModelResult;
 
 const WrapperDiv = styled.div`
 	display: flex;
@@ -58,3 +38,21 @@ const UserDataDiv = styled.div`
 	align-items: center;
 	padding: 10px;
 `;
+
+const ModelResult: FC = () => (
+	<WrapperDiv>
+		<TitleDiv>Result</TitleDiv>
+		<UserSearchDiv>
+			<p>User Name</p>
+			<Input style={{ margin: '0 10px 0 10px' }} />
+			<Button style={{ width: 'auto' }} placeholder='User Name'>
+				<BsSearch />
+			</Button>
+		</UserSearchDiv>
+		<UserDataDiv>
+			<RCGridTable />
+		</UserDataDiv>
+	</WrapperDiv>
+);
+
+export default ModelResult;

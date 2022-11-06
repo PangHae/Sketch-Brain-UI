@@ -1,5 +1,5 @@
 import { AppContext, AppInitialProps, AppProps } from 'next/app';
-import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }: AppProps) {

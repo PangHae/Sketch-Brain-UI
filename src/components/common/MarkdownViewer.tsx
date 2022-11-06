@@ -1,19 +1,17 @@
 import 'react-notion/src/styles.css';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'prismjs/themes/prism-tomorrow.css'; // only needed for code highlighting
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BlockMapType, NotionRenderer } from 'react-notion';
 import styled from 'styled-components';
+
 interface Props {
 	res: BlockMapType;
 }
 
-const MarkdownViewer = ({ res }: Props) => {
-	return (
-		<MarkdownDiv>
-			{Object.keys(res).length && <NotionRenderer blockMap={res} fullPage={true} />}
-		</MarkdownDiv>
-	);
-};
+const MarkdownViewer = ({ res }: Props) => (
+	<MarkdownDiv>{Object.keys(res).length && <NotionRenderer blockMap={res} fullPage />}</MarkdownDiv>
+);
 
 export default MarkdownViewer;
 

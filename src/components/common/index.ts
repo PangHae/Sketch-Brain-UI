@@ -1,3 +1,5 @@
 import dynamic from 'next/dynamic';
 
-export const Modal = dynamic(() => import('./Modal'), { ssr: false });
+const Modal = dynamic(() => import('./Modal'), { ssr: false });
+
+export default Modal;

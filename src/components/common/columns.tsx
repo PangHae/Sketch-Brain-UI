@@ -1,24 +1,21 @@
-import { useState, type ChangeEventHandler, useCallback, useEffect } from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useState, type ChangeEventHandler, useCallback } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { LayerParameterNameAdded } from '../../types';
 import Input from './Input';
 
-export const getColumns = (setData: any) => {
+const getColumns = (setData: any) => {
 	const columnHelper = createColumnHelper<LayerParameterNameAdded>();
 
 	const columns = [
 		columnHelper.accessor('parameterName', {
 			header: 'Parameter Name',
-			cell: (value) => {
-				return <Input value={value.getValue().toString()} disabled />;
-			},
+			cell: (value) => <Input value={value.getValue().toString()} disabled />,
 			size: 171.5,
 		}),
 		columnHelper.accessor('type', {
 			header: 'Type',
-			cell: (value) => {
-				return <Input value={value.getValue().toString()} disabled />;
-			},
+			cell: (value) => <Input value={value.getValue().toString()} disabled />,
 			size: 171.5,
 		}),
 		columnHelper.accessor('default_value', {
@@ -32,8 +29,8 @@ export const getColumns = (setData: any) => {
 				}, []);
 
 				const onBlur = useCallback(() => {
-					setData((old: LayerParameterNameAdded[]) => {
-						return old.map((row, index) => {
+					setData((old: LayerParameterNameAdded[]) =>
+						old.map((row, index) => {
 							if (index === rowIndex) {
 								return {
 									...old[rowIndex]!,
@@ -41,8 +38,9 @@ export const getColumns = (setData: any) => {
 								};
 							}
 							return row;
-						});
-					});
+						}),
+					);
+					// eslint-disable-next-line react-hooks/exhaustive-deps
 				}, [table, rowIndex, columnId, value]);
 
 				return <Input value={value.toString()} onChange={onChangeInput} onBlur={onBlur} />;
@@ -53,3 +51,5 @@ export const getColumns = (setData: any) => {
 
 	return columns;
 };
+
+export default getColumns;

@@ -1,23 +1,16 @@
-import React, { MouseEvent, ReactElement, useEffect, useMemo } from 'react';
-import { ParsedLayerParameter, ParsedLayerParameterList } from '../../types';
-import Input from '../common/Input';
+import React, { ReactElement } from 'react';
 import { LayerDiv } from './Layer';
-
-type LayerParameter = {
-	parameterName: string;
-	valueType: string;
-	value: string | number | boolean;
-};
 
 interface Props {
 	key: string;
 	name: string;
-	value: ParsedLayerParameter;
+	// value: ParsedLayerParameter;
 	index: number;
+	// eslint-disable-next-line no-unused-vars
 	onClick: (index: number) => void;
 }
 
-function AddedLayer({ name, value, index, onClick }: Props): ReactElement {
+function AddedLayer({ name, index, onClick }: Props): ReactElement {
 	return <LayerDiv onClick={() => onClick(index)}>{name}</LayerDiv>;
 }
 

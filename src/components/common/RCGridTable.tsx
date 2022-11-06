@@ -1,9 +1,9 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import Table from 'rc-table';
-import Button from './Button';
 import { BsDownload } from 'react-icons/bs';
-import { TiDelete } from 'react-icons/Ti';
+import { TiDelete } from 'react-icons/ti';
 import styled from 'styled-components';
+import Button from './Button';
 
 interface Props {}
 
@@ -74,7 +74,24 @@ const data = [
 	},
 ].reverse();
 
+const StyledTable = styled.table`
+	width: 100%;
+	padding: 10px;
+`;
+
+const components = {
+	table: StyledTable,
+};
+
 const RCGridTable: FC<Props> = () => {
+	const handleOnClickDownloadData = (value: ResultRes) => {
+		console.log(value);
+	};
+
+	const handleOnClickDownloadModelFile = (value: ResultRes) => {
+		console.log(value);
+	};
+
 	const columns = [
 		{
 			title: 'UUID',
@@ -139,24 +156,7 @@ const RCGridTable: FC<Props> = () => {
 		},
 	];
 
-	const handleOnClickDownloadData = (value: ResultRes) => {
-		console.log(value);
-	};
-
-	const handleOnClickDownloadModelFile = (value: ResultRes) => {
-		console.log(value);
-	};
-
 	return <Table columns={columns} data={data} components={components} />;
 };
 
 export default RCGridTable;
-
-const StyledTable = styled.table`
-	width: 100%;
-	padding: 10px;
-`;
-
-const components = {
-	table: StyledTable,
-};

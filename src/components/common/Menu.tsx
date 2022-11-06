@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { MouseEventHandler, ReactElement } from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
@@ -38,13 +39,11 @@ function Menu(): ReactElement {
 				<Image src={Logo} />
 			</ImageWrapperDiv>
 			<Title>Sketch Brain</Title>
-			{menuList.map((v) => {
-				return (
-					<MenuItemDiv className={v.value} key={v.value} onClick={handleClickMenu}>
-						<p>{v.text}</p>
-					</MenuItemDiv>
-				);
-			})}
+			{menuList.map((v) => (
+				<MenuItemDiv className={v.value} key={v.value} onClick={handleClickMenu}>
+					<p>{v.text}</p>
+				</MenuItemDiv>
+			))}
 		</>
 	);
 }

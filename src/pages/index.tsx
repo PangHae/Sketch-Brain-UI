@@ -2,22 +2,20 @@ import type { InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import Container from '../components/common/Container';
 import MarkdownViewer from '../components/common/MarkdownViewer';
-import { requestApi } from '../utils/axios';
+import requestApi from '../utils/axios';
 
-const Home = ({ data }: InferGetStaticPropsType<typeof getStaticProps>) => {
-	return (
-		<>
-			<Head>
-				<title>Sketch Brain</title>
-			</Head>
-			<main>
-				<Container>
-					<MarkdownViewer res={data} />
-				</Container>
-			</main>
-		</>
-	);
-};
+const Home = ({ data }: InferGetStaticPropsType<typeof getStaticProps>) => (
+	<>
+		<Head>
+			<title>Sketch Brain</title>
+		</Head>
+		<main>
+			<Container>
+				<MarkdownViewer res={data} />
+			</Container>
+		</main>
+	</>
+);
 
 export default Home;
 

@@ -34,18 +34,18 @@ const MenuDiv = styled.aside`
 	color: white;
 `;
 
-const SubMenuDiv = styled.div`
-	width: 250px;
-	height: calc(100vh - 50px);
-	padding: 25px;
-	background-color: rgb(233, 237, 252);
-	overflow: hidden;
-`;
+// const SubMenuDiv = styled.div`
+// 	width: 250px;
+// 	height: calc(100vh - 50px);
+// 	padding: 25px;
+// 	background-color: rgb(233, 237, 252);
+// 	overflow: hidden;
+// `;
 
-const ContentDiv = styled.div`
-	width: calc(100vw - 400px);
-	height: calc(100vh - 100px);
-	padding: 50px;
-	background-color: white;
-	overflow-y: scroll;
-`;
+// const ContentDiv = styled.div`
+// 	width: calc(100vw - 400px);
+// 	height: calc(100vh - 100px);
+// 	padding: 50px;
+// 	background-color: white;
+// 	overflow-y: scroll;
+// `;
