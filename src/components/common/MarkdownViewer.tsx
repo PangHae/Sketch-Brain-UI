@@ -1,20 +1,22 @@
-import React, { ReactElement } from 'react';
-import ReactMarkdown from 'react-markdown';
+import 'react-notion/src/styles.css';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'prismjs/themes/prism-tomorrow.css'; // only needed for code highlighting
+import React from 'react';
+import { BlockMapType, NotionRenderer } from 'react-notion';
+import styled from 'styled-components';
 
 interface Props {
-	initialValue: string;
+	res: BlockMapType;
 }
 
-function MarkdownViewer(): ReactElement {
-	return (
-		<ReactMarkdown>
-			{
-				'[hello](#hello1)\n # hello \n ## hello\n # hello\n # hello\n # hello\n # hello\n # hello\n # hello\n # hello\n # hello\n # hello\n # hello\n # hello\n # hello\n # hello\n # hello\n # hello1'
-			}
-		</ReactMarkdown>
-	);
-}
+const MarkdownViewer = ({ res }: Props) => (
+	<MarkdownDiv>{Object.keys(res).length && <NotionRenderer blockMap={res} fullPage />}</MarkdownDiv>
+);
 
 export default MarkdownViewer;
-// https://se9round.dev/post/React%EC%97%90%EC%84%9C%20Intersection%20Observer%EB%A1%9C%20TOC%20%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0
-// https://blog.logrocket.com/how-to-safely-render-markdown-using-react-markdown/
+
+const MarkdownDiv = styled.div`
+	width: calc(100% - 20px);
+	background-color: rgb(233, 237, 252);
+	overflow-y: scroll;
+`;

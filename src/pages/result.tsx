@@ -1,19 +1,19 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
 import Container from '../components/common/Container';
-import BuildModel from '../components/content/BuildModel';
+import ModelResult from '../components/content/ModelResult';
 
-const ModelCreate: NextPage = () => (
+const ModelExport: NextPage = () => (
 	<>
 		<Head>
 			<title>Sketch Brain</title>
 		</Head>
 		<main>
 			<Container>
-				<BuildModel />
+				<ModelResult />
 			</Container>
 		</main>
 	</>
 );
 
-export default ModelCreate;
+export default ModelExport;

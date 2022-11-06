@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { MouseEventHandler, ReactElement } from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
@@ -14,8 +15,8 @@ const menuList = [
 		value: 'modelCreate',
 	},
 	{
-		text: '모델 추출하기',
-		value: 'modelExport',
+		text: '결과 확인하기',
+		value: 'result',
 	},
 ];
 
@@ -38,13 +39,11 @@ function Menu(): ReactElement {
 				<Image src={Logo} />
 			</ImageWrapperDiv>
 			<Title>Sketch Brain</Title>
-			{menuList.map((v, i) => {
-				return (
-					<MenuItemDiv className={v.value} key={v.value} onClick={handleClickMenu}>
-						<p>{v.text}</p>
-					</MenuItemDiv>
-				);
-			})}
+			{menuList.map((v) => (
+				<MenuItemDiv className={v.value} key={v.value} onClick={handleClickMenu}>
+					<p>{v.text}</p>
+				</MenuItemDiv>
+			))}
 		</>
 	);
 }

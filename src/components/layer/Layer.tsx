@@ -1,7 +1,7 @@
-import axios from 'axios';
-import React, { MouseEventHandler, ReactElement, useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { MouseEvent, MouseEventHandler, ReactElement, useState } from 'react';
 import styled from 'styled-components';
+import requestApi from '../../utils/axios';
 import {
 	EntriedLayerParameter,
 	LayerItem,
@@ -11,52 +11,11 @@ import {
 
 interface Props {
 	value: LayerItem;
-	onClick: (data: ParsedLayerParameter[]) => void;
+	// eslint-disable-next-line no-unused-vars
+	onClick: (data: ParsedLayerParameter, event: MouseEvent<HTMLDivElement>) => void;
 }
 
-const URL = process.env.NEXT_PUBLIC_API_URL;
-
-function Layer({ value, onClick }: Props): ReactElement {
-	const [layerDataJson, setLayerDataJson] = useState<ParsedLayerParameter[]>([]);
-	useQuery(
-		[`${value.name}`],
-		() => axios.get(`${URL}/api/server/layer/name/${value.fileName.toLowerCase()}`),
-		{
-			retry: 0,
-			onSuccess: (response) => {
-				const dataArr = Object.entries(response.data)
-					.map((value: EntriedLayerParameter) => {
-						const v = value[1] as LayerParameter;
-						if (v.visible) {
-							if (v.type === 'int' || v.type === 'float') {
-								v.type = 'number';
-							}
-							return {
-								[value[0]]: v,
-							};
-						}
-					})
-					.filter((value) => value);
-
-				setLayerDataJson(dataArr);
-			},
-			onError: (error: Error) => {
-				console.log(error.message);
-			},
-		},
-	);
-
-	const handleClickLayer = () => {
-		onClick(layerDataJson);
-		console.log(layerDataJson);
-	};
-
-	return <LayerDiv onClick={() => handleClickLayer()}>{value.name}</LayerDiv>;
-}
-
-export default Layer;
-
-const LayerDiv = styled.div`
+export const LayerDiv = styled.div`
 	width: 80%;
 	height: 50px;
 	line-height: 50px;
@@ -75,3 +34,48 @@ const LayerDiv = styled.div`
 		color: white;
 	}
 `;
+
+function Layer({ value, onClick }: Props): ReactElement {
+	const [layerDataJson, setLayerDataJson] = useState<ParsedLayerParameter>({});
+	useQuery(
+		[`${value.name}`],
+		() =>
+			requestApi
+				.get<EntriedLayerParameter>(`/api/server/layer/name/${value.fileName.toLowerCase()}`)
+				.then((res) => res.data),
+		{
+			retry: 0,
+			onSuccess: (data) => {
+				if (!data || Object.keys(data).length === 0) return;
+
+				let tmp = {};
+				Object.entries(data).forEach((values) => {
+					const v = values[1] as LayerParameter;
+					if (v.visible) {
+						delete v.visible;
+						if (v.default_value === null) {
+							v.default_value = '';
+						}
+						tmp = { ...tmp, [values[0]]: v };
+					}
+				});
+				setLayerDataJson(tmp);
+			},
+			onError: (error: Error) => {
+				console.log(error.message);
+			},
+		},
+	);
+
+	const handleClickLayer: MouseEventHandler<HTMLDivElement> = (e) => {
+		onClick(layerDataJson, e);
+	};
+
+	return (
+		<LayerDiv id={value.fileName} onClick={(e) => handleClickLayer(e)}>
+			{value.name}
+		</LayerDiv>
+	);
+}
+
+export default Layer;

@@ -1,6 +1,6 @@
-import React, { ReactElement } from 'react';
-import Layer from './Layer';
+import React, { ReactElement, MouseEvent } from 'react';
 import styled from 'styled-components';
+import Layer from './Layer';
 import { ParsedLayerParameter } from '../../types';
 
 const layerList = [
@@ -16,7 +16,8 @@ const layerList = [
 ];
 
 interface Props {
-	onClick: (data: ParsedLayerParameter[]) => void;
+	// eslint-disable-next-line no-unused-vars
+	onClick: (data: ParsedLayerParameter, event: MouseEvent<HTMLDivElement>) => void;
 }
 
 function LayerList({ onClick }: Props): ReactElement {

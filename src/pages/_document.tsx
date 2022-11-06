@@ -26,6 +26,7 @@ class MyDocument extends Document {
 		}
 	}
 
+	// eslint-disable-next-line class-methods-use-this
 	render() {
 		return (
 			<Html>
@@ -38,6 +39,7 @@ class MyDocument extends Document {
 				<body>
 					<Main />
 					<NextScript />
+					<div id='modals' />
 				</body>
 			</Html>
 		);
