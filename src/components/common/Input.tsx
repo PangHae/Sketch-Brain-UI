@@ -26,6 +26,6 @@ const StyleInput = styled.input`
 	&:focus-visible,
 	&:focus-within {
 		outline: none;
-		border: 1.5px solid #492dd6;
+		border: 1px solid #492dd6;
 	}
 `;

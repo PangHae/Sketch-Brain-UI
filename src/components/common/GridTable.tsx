@@ -4,16 +4,19 @@ import styled from 'styled-components';
 import { getColumns } from './columns';
 
 import { LayerParameterNameAdded } from '../../types';
+import { cloneDeep } from 'lodash';
+import Button from './Button';
 
 interface Props {
 	row: LayerParameterNameAdded[];
 	setRow: Dispatch<SetStateAction<LayerParameterNameAdded[]>>;
+	curLayerIndex: number;
 }
 
-const GridTable: React.FC<Props> = ({ row, setRow }) => {
+const GridTable: React.FC<Props> = ({ row, setRow, curLayerIndex }) => {
 	const [data, setData] = useState<LayerParameterNameAdded[]>([]);
 
-	const columns = useMemo(() => getColumns(setRow), [setRow]);
+	const columns = useMemo(() => getColumns(setData), [curLayerIndex]);
 
 	const table = useReactTable({
 		data,
@@ -21,53 +24,46 @@ const GridTable: React.FC<Props> = ({ row, setRow }) => {
 		getCoreRowModel: getCoreRowModel(),
 	});
 
-	// MEMO: 지금 당장 안씀
-	// const handleOnChangeTableData = (
-	// 	value: CellContext<LayerParameterNameAdded, string | number | boolean | null>,
-	// 	e: ChangeEvent<HTMLInputElement>,
-	// ) => {
-	// 	const { target } = e;
-	// 	const newData = [...data].map((v) => {
-	// 		if (v.parameterName === value.row.original.parameterName) {
-	// 			v.default_value = target.value;
-	// 		}
-	// 		return v;
-	// 	});
-	// 	setRow(newData);
-	// };
+	const handleOnClickSaveParams = () => {
+		setRow(data);
+	};
 
 	useEffect(() => {
-		if (row.length) {
-			setData([...row]);
-		}
+		setData([...cloneDeep(row)]);
 	}, [row]);
 
 	return (
-		<StyledTable>
-			<thead>
-				{table.getHeaderGroups().map((headerGroup) => (
-					<tr key={headerGroup.id}>
-						{headerGroup.headers.map((header) => (
-							<th key={header.id} style={{ width: header.getSize() }}>
-								{/* {header.isPlaceholder && } */}
-								{header.isPlaceholder
-									? null
-									: flexRender(header.column.columnDef.header, header.getContext())}
-							</th>
-						))}
-					</tr>
-				))}
-			</thead>
-			<tbody>
-				{table.getRowModel().rows.map((row) => (
-					<tr key={row.id}>
-						{row.getVisibleCells().map((cell) => (
-							<td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-						))}
-					</tr>
-				))}
-			</tbody>
-		</StyledTable>
+		<>
+			<StyledTable>
+				<thead>
+					{table.getHeaderGroups().map((headerGroup) => (
+						<tr key={headerGroup.id}>
+							{headerGroup.headers.map((header) => (
+								<th key={header.id} style={{ width: header.getSize() }}>
+									{header.isPlaceholder
+										? null
+										: flexRender(header.column.columnDef.header, header.getContext())}
+								</th>
+							))}
+						</tr>
+					))}
+				</thead>
+				<tbody>
+					{table.getRowModel().rows.map((row) => (
+						<tr key={row.id}>
+							{row.getVisibleCells().map((cell) => (
+								<td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+							))}
+						</tr>
+					))}
+				</tbody>
+			</StyledTable>
+			<Button
+				value={'Save'}
+				onClick={handleOnClickSaveParams}
+				style={{ position: 'absolute', right: '30px', top: '20px' }}
+			/>
+		</>
 	);
 };
 

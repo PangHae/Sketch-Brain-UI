@@ -20,7 +20,7 @@ function Layer({ value, onClick }: Props): ReactElement {
 		[`${value.name}`],
 		() =>
 			requestApi
-				.get<EntriedLayerParameter>(`/server/layer/name/${value.fileName.toLowerCase()}`)
+				.get<EntriedLayerParameter>(`/api/server/layer/name/${value.fileName.toLowerCase()}`)
 				.then((res) => res.data),
 		{
 			retry: 0,
@@ -32,6 +32,9 @@ function Layer({ value, onClick }: Props): ReactElement {
 					const v = value[1] as LayerParameter;
 					if (v.visible) {
 						delete v.visible;
+						if (v.default_value === null) {
+							v.default_value = '';
+						}
 						tmp = { ...tmp, [value[0]]: v };
 					}
 				});

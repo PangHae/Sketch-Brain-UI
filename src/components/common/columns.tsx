@@ -1,9 +1,9 @@
-import { useState, type ChangeEventHandler, useCallback } from 'react';
+import { useState, type ChangeEventHandler, useCallback, useEffect } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
 import { LayerParameterNameAdded } from '../../types';
 import Input from './Input';
 
-export const getColumns = (setRow: any) => {
+export const getColumns = (setData: any) => {
 	const columnHelper = createColumnHelper<LayerParameterNameAdded>();
 
 	const columns = [
@@ -12,16 +12,14 @@ export const getColumns = (setRow: any) => {
 			cell: (value) => {
 				return <Input value={value.getValue().toString()} disabled />;
 			},
-			minSize: 100,
-			size: 100,
+			size: 171.5,
 		}),
 		columnHelper.accessor('type', {
 			header: 'Type',
 			cell: (value) => {
 				return <Input value={value.getValue().toString()} disabled />;
 			},
-			minSize: 80,
-			size: 80,
+			size: 171.5,
 		}),
 		columnHelper.accessor('default_value', {
 			header: 'Value',
@@ -34,8 +32,7 @@ export const getColumns = (setRow: any) => {
 				}, []);
 
 				const onBlur = useCallback(() => {
-					setRow((old: LayerParameterNameAdded[]) => {
-						console.log('updated::');
+					setData((old: LayerParameterNameAdded[]) => {
 						return old.map((row, index) => {
 							if (index === rowIndex) {
 								return {
@@ -48,16 +45,9 @@ export const getColumns = (setRow: any) => {
 					});
 				}, [table, rowIndex, columnId, value]);
 
-				return (
-					<Input
-						value={value === null ? '' : value.toString()}
-						onChange={onChangeInput}
-						onBlur={onBlur}
-					/>
-				);
+				return <Input value={value.toString()} onChange={onChangeInput} onBlur={onBlur} />;
 			},
-			minSize: 150,
-			size: 150,
+			size: 171.5,
 		}),
 	];
 

@@ -38,7 +38,7 @@ function Menu(): ReactElement {
 				<Image src={Logo} />
 			</ImageWrapperDiv>
 			<Title>Sketch Brain</Title>
-			{menuList.map((v, i) => {
+			{menuList.map((v) => {
 				return (
 					<MenuItemDiv className={v.value} key={v.value} onClick={handleClickMenu}>
 						<p>{v.text}</p>

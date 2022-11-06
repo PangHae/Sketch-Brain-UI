@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-	value: string;
+	value?: string;
 }
 
 const Button = ({ className, value, children, ...props }: Props) => {

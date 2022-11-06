@@ -14,11 +14,11 @@ interface Props {
 	name: string;
 	value: ParsedLayerParameter;
 	index: number;
-	onClick: (data: ParsedLayerParameter, index: number, e: MouseEvent<HTMLDivElement>) => void;
+	onClick: (index: number) => void;
 }
 
 function AddedLayer({ name, value, index, onClick }: Props): ReactElement {
-	return <LayerDiv onClick={(e) => onClick(value, index, e)}>{name}</LayerDiv>;
+	return <LayerDiv onClick={() => onClick(index)}>{name}</LayerDiv>;
 }
 
 export default AddedLayer;
