@@ -201,7 +201,8 @@ function BuildModel(): ReactElement {
 		if (Object.keys(parsedLayer).length) {
 			postValid.mutate(parsedLayer);
 		}
-	}, [parsedLayer, postValid]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [parsedLayer]);
 
 	useEffect(() => {
 		if (curLayer) {
