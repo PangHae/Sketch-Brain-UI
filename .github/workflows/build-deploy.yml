@@ -1,0 +1,48 @@
+name: Build & Deploy
+
+on:
+  pull_request:
+    branches: [main, develop]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_IMAGE_NAME: sketchbrain-ui
+      DOCKER_TAG: 1.0.${{ github.run_number }}
+      # DEPLOY_YAML: yamls/sketchbrain-backend-deploy-template.yaml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set ENV
+        run: echo "${{ secrets.REACT_ENV }}" > .env.production
+
+      - name: Docker Build
+        run: docker build . -t ${{ secrets.DOCKER_USER }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_TAG }} -f Dockerfile
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Push Docker Image to DockerHub
+        run: docker push ${{ secrets.DOCKER_USER }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_TAG }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_IMAGE_NAME: sketchbrain-ui
+      DOCKER_TAG: 1.0.${{ github.run_number }}
+      DEPLOY_YAML: yamls/sketchbrain-ui-deploy-template.yaml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set K8S Config
+        run: mkdir ~/.kube && echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+
+      - name: Change Image Name In Yaml
+        run: sed -i 's/#VERSION_STRING#/${{ secrets.DOCKER_USER }}\/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_TAG }}/g' ${{ env.DEPLOY_YAML }}
+
+      - name: Deploy on K8S
+        run: kubectl apply -f ${{ env.DEPLOY_YAML }}

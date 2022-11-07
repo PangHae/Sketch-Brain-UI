@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sketchbrain-ui-deploy
+spec:
+  selector:
+    matchLabels:
+      app: sketchbrain-ui
+  template:
+    metadata:
+      labels:
+        app: sketchbrain-ui
+    spec:
+      imagePullSecrets:
+        - name: docker-pull-secret
+      containers:
+        - name: sketchbrain-ui
+          image: #VERSION_STRING#
+          ports:
+            - name: ui-port
+              containerPort: 8080
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: tz-seoul
+              mountPath: /etc/localtime
+          resources:
+            requests:
+              cpu: '1000m'
+              memory: '2048Mi'
+            limits:
+              cpu: '1000m'
+              memory: '2048Mi'
+      volumes:
+        - name: tz-seoul
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Seoul
