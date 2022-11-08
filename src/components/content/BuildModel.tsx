@@ -10,6 +10,7 @@ import {
 	LayerParameterNameAdded,
 	ErrorMessage,
 	SendLayerObj,
+	GetRunnable,
 } from '../../types';
 import AddedLayer from '../layer/AddedLayer';
 import GridTable from '../common/GridTable';
@@ -93,11 +94,37 @@ function BuildModel(): ReactElement {
 	const [modalOpen, setModalOpen] = useState(false);
 	const [parsedLayer, setParsedLayer] = useState<SendLayerObj>({});
 
-	const postRunnable = useMutation(
-		({ api, value }: SendRunnable) => requestApi.post(api, value).then((res) => res.data),
+	const postStartExpreiment = useMutation(
+		({ experimentId, runnable }: GetRunnable) => {
+			const sendData = {
+				experimentId,
+				runnable,
+				userId: userName,
+				dataName: 'mnist.csv',
+				modelName: `${userName}-${experimentId.slice(0, 6)}.py`,
+			};
+			return requestApi
+				.post('/api/trainer/container/create/experiment', sendData)
+				.then((res) => res.data);
+		},
 		{
 			onSuccess: (data) => {
 				console.log(data);
+			},
+			onError: (error) => {
+				throw error;
+			},
+		},
+	);
+
+	const postRunnable = useMutation(
+		({ api, value }: SendRunnable) => requestApi.post(api, value).then((res) => res.data),
+		{
+			onSuccess: (data: GetRunnable) => {
+				postStartExpreiment.mutate({ experimentId: data.experimentId, runnable: data.runnable });
+			},
+			onError: (error) => {
+				throw error;
 			},
 		},
 	);
@@ -118,7 +145,7 @@ function BuildModel(): ReactElement {
 				}
 			},
 			onError: (error) => {
-				console.log(error);
+				throw error;
 			},
 		},
 	);
