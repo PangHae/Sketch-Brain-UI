@@ -1,102 +1,52 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import Table from 'rc-table';
 import { BsDownload } from 'react-icons/bs';
 import { TiDelete } from 'react-icons/ti';
 import styled from 'styled-components';
+import { useQuery } from '@tanstack/react-query';
 import Button from './Button';
+import { ResultRes } from '../../types';
+import requestApi from '../../utils/axios';
 
-interface Props {}
+interface Props {
+	rows: ResultRes[];
+}
 
-type ResultRes = {
-	id: number;
-	user: string;
-	data_name: string;
-	model_name: string;
-	result: string;
-	created_at: string;
-	key?: string;
-};
+const RCGridTable: FC<Props> = ({ rows }: Props) => {
+	const [downloadType, setDownloadType] = useState('');
+	const [downloadFileName, setDownloadFileName] = useState('');
 
-const data = [
-	{
-		id: 6,
-		user: 'zombie',
-		data_name: 'string',
-		model_name: 'model.py',
-		result: '4.5',
-		created_at: '2022-10-23T20:09:14.000+00:00',
-		key: '6',
-	},
-	{
-		id: 5,
-		user: 'dean',
-		data_name: 'data.csv',
-		model_name: 'model.py',
-		result: '32',
-		created_at: '2022-10-20T13:00:32.000+00:00',
-		key: '5',
-	},
-	{
-		id: 4,
-		user: 'dean',
-		data_name: 'data.csv',
-		model_name: 'model.py',
-		result: '23',
-		created_at: '2022-10-20T10:44:00.000+00:00',
-		key: '4',
-	},
-	{
-		id: 3,
-		user: 'freddie',
-		data_name: 'data.csv',
-		model_name: 'model.py',
-		result: '31',
-		created_at: '2022-10-15T00:45:28.000+00:00',
-		key: '3',
-	},
-	{
-		id: 2,
-		user: 'mason',
-		data_name: 'mnist.csv',
-		model_name: 'model.py',
-		result: '3.0',
-		created_at: '2022-10-14T16:48:35.000+00:00',
-		key: '2',
-	},
-	{
-		id: 1,
-		user: 'freddie',
-		data_name: 'mnist.csv',
-		model_name: 'model.py',
-		result: '3.0',
-		created_at: '2022-10-14T16:14:07.000+00:00',
-		key: '1',
-	},
-].reverse();
+	const { refetch } = useQuery(
+		['downloadData', downloadType, downloadFileName],
+		() => requestApi.get(`/api/file/${downloadType}/${downloadFileName}`).then((res) => res.data),
+		{
+			onSuccess: (data) => console.log(data),
+			onError: (error) => {
+				throw error;
+			},
+			enabled: false,
+		},
+	);
 
-const StyledTable = styled.table`
-	width: 100%;
-	padding: 10px;
-`;
+	useEffect(() => {
+		if (downloadFileName && downloadType) {
+			refetch();
+			setDownloadFileName('');
+			setDownloadType('');
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [downloadFileName, downloadType]);
 
-const components = {
-	table: StyledTable,
-};
-
-const RCGridTable: FC<Props> = () => {
-	const handleOnClickDownloadData = (value: ResultRes) => {
-		console.log(value);
-	};
-
-	const handleOnClickDownloadModelFile = (value: ResultRes) => {
-		console.log(value);
+	const handleOnClickDownload = (type: string, value: string) => {
+		setDownloadType(type);
+		setDownloadFileName(value);
 	};
 
 	const columns = [
 		{
-			title: 'UUID',
+			title: 'Experiment ID',
 			dataIndex: 'id',
-			key: 'uuid',
+			key: 'id',
 			width: 150,
 			align: 'center' as const,
 		},
@@ -124,39 +74,51 @@ const RCGridTable: FC<Props> = () => {
 		},
 		{
 			title: 'Download Data',
-			key: 'downloadData',
+			dataIndex: 'data_name',
+			key: 'data_name',
 			align: 'center' as const,
 			width: 150,
-			render: (value: ResultRes) => (
-				<Button onClick={() => handleOnClickDownloadData(value)}>
+			render: (value: string) => (
+				<Button onClick={() => handleOnClickDownload('dataset', value)}>
 					<BsDownload />
 				</Button>
 			),
 		},
 		{
 			title: 'Download Model',
-			key: 'downloadModel',
+			dataIndex: 'model_name',
+			key: 'model_name',
 			align: 'center' as const,
 			width: 150,
-			render: (value: ResultRes) => (
-				<Button onClick={() => handleOnClickDownloadModelFile(value)}>
+			render: (value: string) => (
+				<Button onClick={() => handleOnClickDownload('model', value)}>
 					<BsDownload />
 				</Button>
 			),
 		},
 		{
 			title: 'Delete',
+			key: 'delete',
 			align: 'center' as const,
 			width: 150,
-			render: (value: ResultRes) => (
-				<Button onClick={() => handleOnClickDownloadModelFile(value)}>
+			render: () => (
+				<Button onClick={() => {}}>
 					<TiDelete size={20} />
 				</Button>
 			),
 		},
 	];
 
-	return <Table columns={columns} data={data} components={components} />;
+	return <Table columns={columns} data={rows} components={components} />;
 };
 
 export default RCGridTable;
+
+const StyledTable = styled.table`
+	width: 100%;
+	padding: 10px;
+`;
+
+const components = {
+	table: StyledTable,
+};

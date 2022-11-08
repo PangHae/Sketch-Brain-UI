@@ -27,3 +27,18 @@ export type ErrorMessage = {
 export type SendLayerObj = {
 	[key: string]: string | { [key: string]: string | number | boolean }[];
 };
+
+export type ResultRes = {
+	id: number;
+	user: string;
+	data_name: string;
+	model_name: string;
+	result: string;
+	created_at: string;
+	key?: string;
+};
+
+export type GetRunnable = {
+	experimentId: string;
+	runnable: string;
+};
