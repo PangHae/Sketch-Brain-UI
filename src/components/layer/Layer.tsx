@@ -16,6 +16,7 @@ interface Props {
 }
 
 export const LayerDiv = styled.div`
+	position: relative;
 	width: 80%;
 	height: 50px;
 	line-height: 50px;
@@ -29,9 +30,8 @@ export const LayerDiv = styled.div`
 	background-color: rgb(159, 190, 248);
 	&:hover {
 		cursor: pointer;
-		border: 1px solid #492dd6;
-		background-color: #492dd6;
-		color: white;
+		border: 1px solid rgb(159, 180, 248);
+		background-color: rgb(159, 180, 248);
 	}
 `;
 

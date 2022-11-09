@@ -71,6 +71,7 @@ const ParameterPreviewDiv = styled.div`
 	display: flex;
 	flex-direction: column;
 	width: ${(props) => props.style?.width};
+	text-align: center;
 	background-color: rgb(234, 237, 251);
 `;
 
@@ -85,7 +86,7 @@ const WillAddedDiv = styled.div`
 `;
 
 function BuildModel(): ReactElement {
-	const [previewDisplay, setPreviewDisplay] = useState(false);
+	// const [previewDisplay, setPreviewDisplay] = useState(false);
 	const [curLayerIndex, setCurLayerIndex] = useState(-1);
 	const [curLayer, setCurLayer] = useState<LayerParameterNameAdded[]>([]);
 	const [layerList, setLayerList] = useState<ParsedLayerParameterList[]>([]);
@@ -161,9 +162,9 @@ function BuildModel(): ReactElement {
 	// Layer Preview에 추가된 Layer를 클릭해 표를 화면에 표현
 	const handleClickAddedLayer = (index: number) => {
 		setCurLayerIndex(index);
-		if (!previewDisplay) {
-			setPreviewDisplay(true);
-		}
+		// if (!previewDisplay) {
+		// 	setPreviewDisplay(true);
+		// }
 	};
 
 	const handleOnClickMakeModel = () => {
@@ -224,6 +225,16 @@ function BuildModel(): ReactElement {
 		setUserName((target as HTMLInputElement).value);
 	};
 
+	const handleOnClickDeleteLayer = (index: number) => {
+		if (layerList.length === 1) {
+			setLayerList([]);
+		} else {
+			const deleteLayerList = [...layerList].filter((v, i) => i !== index);
+			setLayerList(deleteLayerList);
+		}
+		setCurLayer([]);
+	};
+
 	useEffect(() => {
 		if (Object.keys(parsedLayer).length) {
 			postValid.mutate(parsedLayer);
@@ -232,7 +243,7 @@ function BuildModel(): ReactElement {
 	}, [parsedLayer]);
 
 	useEffect(() => {
-		if (curLayer) {
+		if (curLayer.length) {
 			const tmpLayerList = [...layerList];
 			curLayer.forEach((value) => {
 				const { default_value, parameterName } = value;
@@ -244,9 +255,9 @@ function BuildModel(): ReactElement {
 	}, [curLayer]);
 
 	useEffect(() => {
-		if (curLayerIndex > -1) {
+		if (curLayerIndex > -1 && layerList.length) {
 			const clonedLayer = cloneDeep(layerList[curLayerIndex]);
-			const layerKeyVal = Object.entries(clonedLayer);
+			const layerKeyVal = clonedLayer && Object.entries(clonedLayer);
 			const row = Object.entries(layerKeyVal[0][1]).map((value) => ({
 				...value[1],
 				parameterName: value[0],
@@ -270,7 +281,7 @@ function BuildModel(): ReactElement {
 					<LayerList onClick={handleClickLayer} />
 				</BlockSelectDiv>
 				<BlockDisplayDiv>
-					<BlockDiv style={{ width: previewDisplay ? 'calc(100% - 550px)' : '100%' }}>
+					<BlockDiv style={{ width: 'calc(100% - 550px)' }}>
 						<TitleDiv>Layer Preview</TitleDiv>
 						<Input
 							type={'text'}
@@ -290,6 +301,7 @@ function BuildModel(): ReactElement {
 											name={name}
 											onClick={handleClickAddedLayer}
 											index={index}
+											onClickDelete={handleOnClickDeleteLayer}
 										/>
 									);
 								})}
@@ -301,10 +313,12 @@ function BuildModel(): ReactElement {
 							onClick={handleOnClickMakeModel}
 						/>
 					</BlockDiv>
-					<ParameterPreviewDiv style={{ width: previewDisplay ? '550px' : '0' }}>
-						{previewDisplay && <TitleDiv>Set Parameter</TitleDiv>}
-						{previewDisplay && (
+					<ParameterPreviewDiv style={{ width: '550px' }}>
+						<TitleDiv>Set Parameter</TitleDiv>
+						{curLayer.length !== 0 ? (
 							<GridTable row={curLayer} setRow={setCurLayer} curLayerIndex={curLayerIndex} />
+						) : (
+							'There are no required parameters.'
 						)}
 					</ParameterPreviewDiv>
 				</BlockDisplayDiv>
