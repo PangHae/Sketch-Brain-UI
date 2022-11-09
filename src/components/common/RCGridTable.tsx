@@ -18,12 +18,22 @@ const RCGridTable: FC<Props> = ({ rows }: Props) => {
 
 	const { refetch } = useQuery(
 		['downloadData', downloadType, downloadFileName],
-		() => requestApi.get(`/api/file/${downloadType}/${downloadFileName}`).then((res) => res.data),
+		() =>
+			requestApi.get(`/api/file/${downloadType}/${downloadFileName}`).then((res) => {
+				const blob = new Blob([res.data], { type: 'application/octet-stream' });
+				const href = URL.createObjectURL(blob);
+
+				const link = document.createElement('a');
+				link.href = href;
+				link.download = downloadFileName;
+				document.body.appendChild(link);
+				link.click();
+
+				// clean up "a" element & remove ObjectURL
+				document.body.removeChild(link);
+				URL.revokeObjectURL(href);
+			}),
 		{
-			onSuccess: (data) => console.log(data),
-			onError: (error) => {
-				throw error;
-			},
 			enabled: false,
 		},
 	);
@@ -45,10 +55,11 @@ const RCGridTable: FC<Props> = ({ rows }: Props) => {
 	const columns = [
 		{
 			title: 'Experiment ID',
-			dataIndex: 'id',
-			key: 'id',
+			dataIndex: 'uuid',
+			key: 'uuid',
 			width: 150,
 			align: 'center' as const,
+			render: (value: string) => value.slice(0, 6),
 		},
 		{
 			title: 'User',
