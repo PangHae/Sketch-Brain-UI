@@ -226,13 +226,12 @@ function BuildModel(): ReactElement {
 	};
 
 	const handleOnClickDeleteLayer = (index: number) => {
-		if (layerList.length === 1) {
-			setLayerList([]);
-		} else {
-			const deleteLayerList = [...layerList].filter((v, i) => i !== index);
-			setLayerList(deleteLayerList);
+		const deleteLayerList = [...layerList].filter((v, i) => i !== index);
+		setLayerList(deleteLayerList);
+		if (curLayerIndex === index) {
+			setCurLayerIndex(-1);
+			setCurLayer([]);
 		}
-		setCurLayer([]);
 	};
 
 	useEffect(() => {

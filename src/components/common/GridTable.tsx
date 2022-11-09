@@ -18,7 +18,7 @@ const GridTable: React.FC<Props> = ({ row, setRow, curLayerIndex }) => {
 	const [data, setData] = useState<LayerParameterNameAdded[]>([]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const columns = useMemo(() => getColumns(setData), [curLayerIndex]);
+	const columns = useMemo(() => getColumns(setData), [data, curLayerIndex]);
 
 	const table = useReactTable({
 		data,
