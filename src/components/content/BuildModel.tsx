@@ -3,6 +3,8 @@ import React, { ReactElement, useState, MouseEvent, ChangeEvent, useEffect } fro
 import styled from 'styled-components';
 import { useMutation } from '@tanstack/react-query';
 import { cloneDeep } from 'lodash';
+import axios, { AxiosError } from 'axios';
+import { useRouter } from 'next/router';
 import LayerList from '../layer/LayerList';
 import {
 	ParsedLayerParameterList,
@@ -31,6 +33,7 @@ const ContentWrapperDiv = styled.div`
 `;
 
 const BlockSelectDiv = styled.div`
+	position: relative;
 	width: 300px;
 	height: 100vh;
 	overflow-y: scroll;
@@ -71,6 +74,7 @@ const ParameterPreviewDiv = styled.div`
 	display: flex;
 	flex-direction: column;
 	width: ${(props) => props.style?.width};
+	text-align: center;
 	background-color: rgb(234, 237, 251);
 `;
 
@@ -85,7 +89,7 @@ const WillAddedDiv = styled.div`
 `;
 
 function BuildModel(): ReactElement {
-	const [previewDisplay, setPreviewDisplay] = useState(false);
+	// const [previewDisplay, setPreviewDisplay] = useState(false);
 	const [curLayerIndex, setCurLayerIndex] = useState(-1);
 	const [curLayer, setCurLayer] = useState<LayerParameterNameAdded[]>([]);
 	const [layerList, setLayerList] = useState<ParsedLayerParameterList[]>([]);
@@ -93,26 +97,52 @@ function BuildModel(): ReactElement {
 	const [errorMessage, setErrorMessage] = useState<ErrorMessage>({ message: '', messageType: '' });
 	const [modalOpen, setModalOpen] = useState(false);
 	const [parsedLayer, setParsedLayer] = useState<SendLayerObj>({});
+	const [experimentUuid, setExperimentUuid] = useState('');
+	const router = useRouter();
 
-	const postStartExpreiment = useMutation(
+	const postStartExperiment = useMutation(
+		() =>
+			requestApi
+				.patch('/api/trainer/container/start/experiment', {
+					experimentId: experimentUuid,
+					userId: userName,
+				})
+				.then((res) => res.data),
+		{
+			onSuccess: (data) => {
+				if (data.run === 'success') {
+					setErrorMessage({ messageType: 'Success', message: 'You Success to make Container' });
+					router.push('/result');
+				}
+			},
+		},
+	);
+
+	const postCreateExpreiment = useMutation(
 		({ experimentId, runnable }: GetRunnable) => {
 			const sendData = {
 				experimentId,
 				runnable,
 				userId: userName,
-				dataName: 'mnist.csv',
-				modelName: `${userName}-${experimentId.slice(0, 6)}.py`,
+				dataName: 'mnist.npz',
+				modelName: `model.py`,
 			};
 			return requestApi
 				.post('/api/trainer/container/create/experiment', sendData)
 				.then((res) => res.data);
 		},
 		{
-			onSuccess: (data) => {
-				console.log(data);
+			onSuccess: () => {
+				postStartExperiment.mutate();
 			},
-			onError: (error) => {
-				throw error;
+			onError: (error: Error | AxiosError) => {
+				if (axios.isAxiosError(error)) {
+					setErrorMessage({
+						messageType: error.response?.statusText as string,
+						message: error.response?.data.message as string,
+					});
+					setModalOpen(true);
+				}
 			},
 		},
 	);
@@ -121,10 +151,17 @@ function BuildModel(): ReactElement {
 		({ api, value }: SendRunnable) => requestApi.post(api, value).then((res) => res.data),
 		{
 			onSuccess: (data: GetRunnable) => {
-				postStartExpreiment.mutate({ experimentId: data.experimentId, runnable: data.runnable });
+				setExperimentUuid(data.experimentId);
+				postCreateExpreiment.mutate({ experimentId: data.experimentId, runnable: data.runnable });
 			},
-			onError: (error) => {
-				throw error;
+			onError: (error: Error | AxiosError) => {
+				if (axios.isAxiosError(error)) {
+					setErrorMessage({
+						messageType: error.response?.statusText as string,
+						message: error.response?.data.message as string,
+					});
+					setModalOpen(true);
+				}
 			},
 		},
 	);
@@ -134,7 +171,9 @@ function BuildModel(): ReactElement {
 			requestApi
 				.post('/api/trainer/validator/isValidLayers', layerData)
 				.then((res) => res.data)
-				.catch((error) => error),
+				.catch((error) => {
+					throw error;
+				}),
 		{
 			onSuccess: (data) => {
 				const { _links, valid } = data;
@@ -144,8 +183,14 @@ function BuildModel(): ReactElement {
 					postRunnable.mutate({ api: link, value: parsedLayer });
 				}
 			},
-			onError: (error) => {
-				throw error;
+			onError: (error: Error | AxiosError) => {
+				if (axios.isAxiosError(error)) {
+					setErrorMessage({
+						messageType: error.response?.statusText as string,
+						message: error.response?.data.message as string,
+					});
+					setModalOpen(true);
+				}
 			},
 		},
 	);
@@ -161,9 +206,9 @@ function BuildModel(): ReactElement {
 	// Layer Preview에 추가된 Layer를 클릭해 표를 화면에 표현
 	const handleClickAddedLayer = (index: number) => {
 		setCurLayerIndex(index);
-		if (!previewDisplay) {
-			setPreviewDisplay(true);
-		}
+		// if (!previewDisplay) {
+		// 	setPreviewDisplay(true);
+		// }
 	};
 
 	const handleOnClickMakeModel = () => {
@@ -194,14 +239,14 @@ function BuildModel(): ReactElement {
 			// eslint-disable-next-line prefer-destructuring
 			tmp.name = layerData[0];
 			Object.entries(layerData[1]).forEach((data) => {
-				if (!data[1].default_value) {
-					setErrorMessage({
-						message: `Please Input Value in ${layerData[0]} => ${data[0]}`,
-						messageType: 'Missing Input',
-					});
-					setModalOpen(true);
-					return;
-				}
+				// if (!data[1].default_value) {
+				// 	setErrorMessage({
+				// 		message: `Please Input Value in ${layerData[0]} => ${data[0]}`,
+				// 		messageType: 'Missing Input',
+				// 	});
+				// 	setModalOpen(true);
+				// 	return;
+				// }
 				const layerDefaultValue = data[1].default_value;
 				const defaultValueType = data[1].type;
 				if (defaultValueType === 'float' || defaultValueType === 'int') {
@@ -224,6 +269,167 @@ function BuildModel(): ReactElement {
 		setUserName((target as HTMLInputElement).value);
 	};
 
+	const handleOnClickDeleteLayer = (index: number) => {
+		const deleteLayerList = [...layerList].filter((v, i) => i !== index);
+		setLayerList(deleteLayerList);
+		if (curLayerIndex === index) {
+			setCurLayerIndex(-1);
+			setCurLayer([]);
+		}
+	};
+
+	const handleClickShortCut = () => {
+		setLayerList([
+			{
+				Conv2D: {
+					filter: {
+						type: 'int',
+						default_value: '32',
+					},
+					padding: {
+						type: 'string',
+						default_value: 'valid',
+					},
+					strides: {
+						type: 'string',
+						default_value: '(1,1)',
+					},
+					use_bias: {
+						type: 'boolean',
+						default_value: true,
+					},
+					kernel_size: {
+						type: 'string',
+						default_value: '(5,5)',
+					},
+					bias_initializer: {
+						type: 'string',
+						default_value: 'zeros',
+					},
+					kernel_initializer: {
+						type: 'string',
+						default_value: 'glorot_uniform',
+					},
+				},
+			},
+			{
+				MaxPooling2D: {
+					padding: {
+						type: 'string',
+						default_value: 'valid',
+					},
+					strides: {
+						type: 'string',
+						default_value: '(2,2)',
+					},
+					pool_size: {
+						type: 'string',
+						default_value: '(2,2)',
+					},
+				},
+			},
+			{
+				Conv2D: {
+					filter: {
+						type: 'int',
+						default_value: '64',
+					},
+					padding: {
+						type: 'string',
+						default_value: 'valid',
+					},
+					strides: {
+						type: 'string',
+						default_value: '(1,1)',
+					},
+					use_bias: {
+						type: 'boolean',
+						default_value: true,
+					},
+					kernel_size: {
+						type: 'string',
+						default_value: '(2,2)',
+					},
+					bias_initializer: {
+						type: 'string',
+						default_value: 'zeros',
+					},
+					kernel_initializer: {
+						type: 'string',
+						default_value: 'glorot_uniform',
+					},
+				},
+			},
+			{
+				MaxPooling2D: {
+					padding: {
+						type: 'string',
+						default_value: 'valid',
+					},
+					strides: {
+						type: 'string',
+						default_value: '',
+					},
+					pool_size: {
+						type: 'string',
+						default_value: '(2,2)',
+					},
+				},
+			},
+			{
+				Dropout: {
+					rate: {
+						type: 'float',
+						default_value: '0.25',
+					},
+				},
+			},
+			{
+				Flatten: {},
+			},
+			{
+				Dense: {
+					units: {
+						type: 'int',
+						default_value: '1000',
+					},
+					use_bias: {
+						type: 'boolean',
+						default_value: true,
+					},
+					activation: {
+						type: 'string',
+						default_value: 'relu',
+					},
+					bias_initializer: {
+						type: 'string',
+						default_value: 'zeros',
+					},
+				},
+			},
+			{
+				Dense: {
+					units: {
+						type: 'int',
+						default_value: '10',
+					},
+					use_bias: {
+						type: 'boolean',
+						default_value: true,
+					},
+					activation: {
+						type: 'string',
+						default_value: 'softmax',
+					},
+					bias_initializer: {
+						type: 'string',
+						default_value: 'zeros',
+					},
+				},
+			},
+		]);
+	};
+
 	useEffect(() => {
 		if (Object.keys(parsedLayer).length) {
 			postValid.mutate(parsedLayer);
@@ -232,7 +438,7 @@ function BuildModel(): ReactElement {
 	}, [parsedLayer]);
 
 	useEffect(() => {
-		if (curLayer) {
+		if (curLayer.length) {
 			const tmpLayerList = [...layerList];
 			curLayer.forEach((value) => {
 				const { default_value, parameterName } = value;
@@ -244,14 +450,16 @@ function BuildModel(): ReactElement {
 	}, [curLayer]);
 
 	useEffect(() => {
-		if (curLayerIndex > -1) {
+		if (curLayerIndex > -1 && layerList.length) {
 			const clonedLayer = cloneDeep(layerList[curLayerIndex]);
-			const layerKeyVal = Object.entries(clonedLayer);
-			const row = Object.entries(layerKeyVal[0][1]).map((value) => ({
-				...value[1],
-				parameterName: value[0],
-			}));
-			setCurLayer(row);
+			const layerKeyVal = clonedLayer && Object.entries(clonedLayer);
+			if (layerKeyVal) {
+				const row = Object.entries(layerKeyVal[0][1]).map((value) => ({
+					...value[1],
+					parameterName: value[0],
+				}));
+				setCurLayer(row);
+			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [curLayerIndex]);
@@ -268,9 +476,14 @@ function BuildModel(): ReactElement {
 				<BlockSelectDiv>
 					<TitleDiv>Select Layer</TitleDiv>
 					<LayerList onClick={handleClickLayer} />
+					<Button
+						value={'ShortCut'}
+						style={{ position: 'absolute', bottom: '30px', right: '30px', textAlign: 'center' }}
+						onClick={handleClickShortCut}
+					/>
 				</BlockSelectDiv>
 				<BlockDisplayDiv>
-					<BlockDiv style={{ width: previewDisplay ? 'calc(100% - 550px)' : '100%' }}>
+					<BlockDiv style={{ width: 'calc(100% - 550px)' }}>
 						<TitleDiv>Layer Preview</TitleDiv>
 						<Input
 							type={'text'}
@@ -290,6 +503,7 @@ function BuildModel(): ReactElement {
 											name={name}
 											onClick={handleClickAddedLayer}
 											index={index}
+											onClickDelete={handleOnClickDeleteLayer}
 										/>
 									);
 								})}
@@ -301,10 +515,12 @@ function BuildModel(): ReactElement {
 							onClick={handleOnClickMakeModel}
 						/>
 					</BlockDiv>
-					<ParameterPreviewDiv style={{ width: previewDisplay ? '550px' : '0' }}>
-						{previewDisplay && <TitleDiv>Set Parameter</TitleDiv>}
-						{previewDisplay && (
+					<ParameterPreviewDiv style={{ width: '550px' }}>
+						<TitleDiv>Set Parameter</TitleDiv>
+						{curLayer.length !== 0 ? (
 							<GridTable row={curLayer} setRow={setCurLayer} curLayerIndex={curLayerIndex} />
+						) : (
+							'There are no required parameters.'
 						)}
 					</ParameterPreviewDiv>
 				</BlockDisplayDiv>

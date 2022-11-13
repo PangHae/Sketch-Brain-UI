@@ -30,6 +30,7 @@ export type SendLayerObj = {
 
 export type ResultRes = {
 	id: number;
+	uuid: string;
 	user: string;
 	data_name: string;
 	model_name: string;

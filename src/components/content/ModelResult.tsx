@@ -48,7 +48,7 @@ const ModelResult: FC = () => {
 	const [userName, setUserName] = useState('');
 
 	const { refetch: refetchAllResult } = useQuery(
-		['getAllResult'],
+		[],
 		() => requestApi.get('/api/server/result').then((res) => res.data),
 		{
 			onSuccess: (data) => {
