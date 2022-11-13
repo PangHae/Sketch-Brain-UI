@@ -453,11 +453,13 @@ function BuildModel(): ReactElement {
 		if (curLayerIndex > -1 && layerList.length) {
 			const clonedLayer = cloneDeep(layerList[curLayerIndex]);
 			const layerKeyVal = clonedLayer && Object.entries(clonedLayer);
-			const row = Object.entries(layerKeyVal[0][1]).map((value) => ({
-				...value[1],
-				parameterName: value[0],
-			}));
-			setCurLayer(row);
+			if (layerKeyVal) {
+				const row = Object.entries(layerKeyVal[0][1]).map((value) => ({
+					...value[1],
+					parameterName: value[0],
+				}));
+				setCurLayer(row);
+			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [curLayerIndex]);
