@@ -10,9 +10,9 @@ import {
 	ParsedLayerParameterList,
 	ParsedLayerParameter,
 	LayerParameterNameAdded,
-	ErrorMessage,
 	SendLayerObj,
 	GetRunnable,
+	ModalMessage,
 } from '../../types';
 import AddedLayer from '../layer/AddedLayer';
 import GridTable from '../common/GridTable';
@@ -94,7 +94,11 @@ function BuildModel(): ReactElement {
 	const [curLayer, setCurLayer] = useState<LayerParameterNameAdded[]>([]);
 	const [layerList, setLayerList] = useState<ParsedLayerParameterList[]>([]);
 	const [userName, setUserName] = useState('');
-	const [errorMessage, setErrorMessage] = useState<ErrorMessage>({ message: '', messageType: '' });
+	const [errorMessage, setErrorMessage] = useState<ModalMessage>({
+		message: '',
+		messageType: '',
+		modalType: '',
+	});
 	const [modalOpen, setModalOpen] = useState(false);
 	const [parsedLayer, setParsedLayer] = useState<SendLayerObj>({});
 	const [experimentUuid, setExperimentUuid] = useState('');
@@ -111,7 +115,6 @@ function BuildModel(): ReactElement {
 		{
 			onSuccess: (data) => {
 				if (data.run === 'success') {
-					setErrorMessage({ messageType: 'Success', message: 'You Success to make Container' });
 					router.push('/result');
 				}
 			},
@@ -140,6 +143,7 @@ function BuildModel(): ReactElement {
 					setErrorMessage({
 						messageType: error.response?.statusText as string,
 						message: error.response?.data.message as string,
+						modalType: 'error',
 					});
 					setModalOpen(true);
 				}
@@ -159,6 +163,7 @@ function BuildModel(): ReactElement {
 					setErrorMessage({
 						messageType: error.response?.statusText as string,
 						message: error.response?.data.message as string,
+						modalType: 'error',
 					});
 					setModalOpen(true);
 				}
@@ -188,6 +193,7 @@ function BuildModel(): ReactElement {
 					setErrorMessage({
 						messageType: error.response?.statusText as string,
 						message: error.response?.data.message as string,
+						modalType: 'error',
 					});
 					setModalOpen(true);
 				}
@@ -217,7 +223,11 @@ function BuildModel(): ReactElement {
 
 		// 유저 이름이 있는지 확인
 		if (!userName) {
-			setErrorMessage({ message: 'Please Input User Name.', messageType: 'Missing Input' });
+			setErrorMessage({
+				message: 'Please Input User Name.',
+				messageType: 'Missing Input',
+				modalType: 'error',
+			});
 			setModalOpen(true);
 			return;
 		}
@@ -226,6 +236,7 @@ function BuildModel(): ReactElement {
 			setErrorMessage({
 				message: 'Please Select Layer to Create Model',
 				messageType: 'Missing Model Layer',
+				modalType: 'error',
 			});
 			setModalOpen(true);
 			return;
@@ -433,6 +444,12 @@ function BuildModel(): ReactElement {
 	useEffect(() => {
 		if (Object.keys(parsedLayer).length) {
 			postValid.mutate(parsedLayer);
+			setErrorMessage({
+				message: 'Page will change if layers are valid and runnable.',
+				messageType: 'Loading',
+				modalType: 'loading',
+			});
+			setModalOpen(true);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [parsedLayer]);
@@ -466,7 +483,7 @@ function BuildModel(): ReactElement {
 
 	useEffect(() => {
 		if (!modalOpen) {
-			setErrorMessage({ message: '', messageType: '' });
+			setErrorMessage({ message: '', messageType: '', modalType: '' });
 		}
 	}, [modalOpen]);
 
@@ -530,6 +547,7 @@ function BuildModel(): ReactElement {
 				message={errorMessage.message}
 				modalOpen={modalOpen}
 				setModalOpen={setModalOpen}
+				type={errorMessage.modalType}
 			/>
 		</>
 	);
