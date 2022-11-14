@@ -84,7 +84,7 @@ const RCGridTable: FC<Props> = ({ rows }: Props) => {
 			key: 'uuid',
 			width: 150,
 			align: 'center' as const,
-			render: (value: string) => value.slice(0, 6),
+			render: (value: string) => value.slice(0, 8),
 		},
 		{
 			title: 'User',
