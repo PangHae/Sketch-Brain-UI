@@ -10,9 +10,10 @@ import requestApi from '../../utils/axios';
 
 interface Props {
 	rows: ResultRes[];
+	refresh: () => void;
 }
 
-const RCGridTable: FC<Props> = ({ rows }: Props) => {
+const RCGridTable: FC<Props> = ({ rows, refresh }: Props) => {
 	const [downloadType, setDownloadType] = useState('');
 	const [downloadFileName, setDownloadFileName] = useState('');
 	const [userId, setUserId] = useState('');
@@ -41,12 +42,14 @@ const RCGridTable: FC<Props> = ({ rows }: Props) => {
 	);
 
 	const deleteRow = useMutation(() =>
-		requestApi.delete('/api/trainer/container/delete/experiment', {
-			data: {
-				experimentId: uuid,
-				userId,
-			},
-		}),
+		requestApi
+			.delete('/api/trainer/container/delete/experiment', {
+				data: {
+					experimentId: uuid,
+					userId,
+				},
+			})
+			.then(() => refresh()),
 	);
 
 	useEffect(() => {

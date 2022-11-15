@@ -1,13 +1,13 @@
-import React, { ChangeEventHandler, FC, MouseEventHandler, useState } from 'react';
+import React, { ChangeEventHandler, FC, useState } from 'react';
 import styled from 'styled-components';
 import { BsSearch } from 'react-icons/bs';
 import { VscRefresh } from 'react-icons/vsc';
 import { useQuery } from '@tanstack/react-query';
 import Button from '../common/Button';
 import Input from '../common/Input';
-import RCGridTable from '../common/RCGridTable';
 import requestApi from '../../utils/axios';
 import { ResultRes } from '../../types';
+import RCGridTable from '../common/RCGridTable';
 
 const WrapperDiv = styled.div`
 	display: flex;
@@ -84,7 +84,7 @@ const ModelResult: FC = () => {
 		setUserName(target.value);
 	};
 
-	const handleOnClickRefresh: MouseEventHandler<HTMLButtonElement> = () => {
+	const handleOnClickRefresh = () => {
 		setUserName('');
 		refetchAllResult();
 	};
@@ -111,7 +111,7 @@ const ModelResult: FC = () => {
 				</Button>
 			</UserSearchDiv>
 			<UserDataDiv>
-				<RCGridTable rows={row} />
+				<RCGridTable rows={row} refresh={handleOnClickRefresh} />
 			</UserDataDiv>
 		</WrapperDiv>
 	);
