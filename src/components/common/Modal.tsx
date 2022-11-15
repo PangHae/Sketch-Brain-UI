@@ -9,11 +9,12 @@ interface Props {
 	message: string;
 	modalOpen: boolean;
 	setModalOpen: Dispatch<SetStateAction<boolean>>;
+	type: string;
 }
 
 const $modals = document.getElementById('modals');
 
-const Modal: FC<Props> = ({ messageType, message, modalOpen, setModalOpen }) => {
+const Modal: FC<Props> = ({ messageType, message, modalOpen, setModalOpen, type }) => {
 	const handleOnClickCloseModal: MouseEventHandler<HTMLButtonElement | HTMLDivElement> = () => {
 		setModalOpen(false);
 	};
@@ -23,7 +24,7 @@ const Modal: FC<Props> = ({ messageType, message, modalOpen, setModalOpen }) => 
 			<ModalContentDiv>
 				<ModalMessageH3>{messageType}</ModalMessageH3>
 				<ModalMessageP>{message}</ModalMessageP>
-				<Button value={'close'} onClick={handleOnClickCloseModal} />
+				{type !== 'loading' && <Button value={'close'} onClick={handleOnClickCloseModal} />}
 			</ModalContentDiv>
 		</ModalBackgroundDiv>,
 		$modals!,

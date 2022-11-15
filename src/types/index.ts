@@ -19,9 +19,10 @@ export type ParsedLayerParameter = { [key: string]: LayerParameter };
 
 export type ParsedLayerParameterList = { [key: string]: ParsedLayerParameter };
 
-export type ErrorMessage = {
+export type ModalMessage = {
 	message: string;
 	messageType: string;
+	modalType: string;
 };
 
 export type SendLayerObj = {
