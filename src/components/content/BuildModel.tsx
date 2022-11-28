@@ -289,7 +289,151 @@ function BuildModel(): ReactElement {
 		}
 	};
 
-	const handleClickShortCut = () => {
+	const handleClickShortCut1 = () => {
+		setLayerList([
+			{
+				Conv2D: {
+					filter: {
+						type: 'int',
+						default_value: '16',
+					},
+					padding: {
+						type: 'string',
+						default_value: 'valid',
+					},
+					strides: {
+						type: 'string',
+						default_value: '(1,1)',
+					},
+					use_bias: {
+						type: 'boolean',
+						default_value: true,
+					},
+					kernel_size: {
+						type: 'string',
+						default_value: '(3,3)',
+					},
+					bias_initializer: {
+						type: 'string',
+						default_value: 'zeros',
+					},
+					kernel_initializer: {
+						type: 'string',
+						default_value: 'glorot_uniform',
+					},
+				},
+			},
+			{
+				Conv2D: {
+					filter: {
+						type: 'int',
+						default_value: '32',
+					},
+					padding: {
+						type: 'string',
+						default_value: 'valid',
+					},
+					strides: {
+						type: 'string',
+						default_value: '(1,1)',
+					},
+					use_bias: {
+						type: 'boolean',
+						default_value: true,
+					},
+					kernel_size: {
+						type: 'string',
+						default_value: '(3,3)',
+					},
+					bias_initializer: {
+						type: 'string',
+						default_value: 'zeros',
+					},
+					kernel_initializer: {
+						type: 'string',
+						default_value: 'glorot_uniform',
+					},
+				},
+			},
+			{
+				Conv2D: {
+					filter: {
+						type: 'int',
+						default_value: '64',
+					},
+					padding: {
+						type: 'string',
+						default_value: 'valid',
+					},
+					strides: {
+						type: 'string',
+						default_value: '(1,1)',
+					},
+					use_bias: {
+						type: 'boolean',
+						default_value: true,
+					},
+					kernel_size: {
+						type: 'string',
+						default_value: '(3,3)',
+					},
+					bias_initializer: {
+						type: 'string',
+						default_value: 'zeros',
+					},
+					kernel_initializer: {
+						type: 'string',
+						default_value: 'glorot_uniform',
+					},
+				},
+			},
+			{
+				Flatten: {},
+			},
+			{
+				Dense: {
+					units: {
+						type: 'int',
+						default_value: '128',
+					},
+					use_bias: {
+						type: 'boolean',
+						default_value: true,
+					},
+					activation: {
+						type: 'string',
+						default_value: 'relu',
+					},
+					bias_initializer: {
+						type: 'string',
+						default_value: 'zeros',
+					},
+				},
+			},
+			{
+				Dense: {
+					units: {
+						type: 'int',
+						default_value: '10',
+					},
+					use_bias: {
+						type: 'boolean',
+						default_value: true,
+					},
+					activation: {
+						type: 'string',
+						default_value: 'softmax',
+					},
+					bias_initializer: {
+						type: 'string',
+						default_value: 'zeros',
+					},
+				},
+			},
+		]);
+	};
+
+	const handleClickShortCut2 = () => {
 		setLayerList([
 			{
 				Conv2D: {
@@ -379,7 +523,7 @@ function BuildModel(): ReactElement {
 					},
 					strides: {
 						type: 'string',
-						default_value: '',
+						default_value: '(2,2)',
 					},
 					pool_size: {
 						type: 'string',
@@ -493,11 +637,20 @@ function BuildModel(): ReactElement {
 				<BlockSelectDiv>
 					<TitleDiv>Select Layer</TitleDiv>
 					<LayerList onClick={handleClickLayer} />
-					<Button
-						value={'ShortCut'}
-						style={{ position: 'absolute', bottom: '30px', right: '30px', textAlign: 'center' }}
-						onClick={handleClickShortCut}
-					/>
+					<div
+						style={{
+							display: 'flex',
+							position: 'absolute',
+							bottom: '10px',
+							width: '100%',
+							alignContent: 'center',
+							justifyContent: 'center',
+							gap: '10px',
+						}}
+					>
+						<Button value='PreDef1' onClick={handleClickShortCut1} />
+						<Button value={'PreDef2'} onClick={handleClickShortCut2} />
+					</div>
 				</BlockSelectDiv>
 				<BlockDisplayDiv>
 					<BlockDiv style={{ width: 'calc(100% - 550px)' }}>
@@ -527,7 +680,7 @@ function BuildModel(): ReactElement {
 							</>
 						</WillAddedDiv>
 						<Button
-							value={'submit'}
+							value={'Submit'}
 							style={{ position: 'absolute', right: '30px', bottom: '30px' }}
 							onClick={handleOnClickMakeModel}
 						/>
